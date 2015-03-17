@@ -33,7 +33,7 @@ public class TemporaryMain extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Diavlo Light", 0, 48)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("SUP");
+        jLabel1.setText("Does This Work?");
         jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
