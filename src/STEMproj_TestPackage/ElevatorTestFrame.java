@@ -96,7 +96,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 elevatorSystem.elevator1.closeDoor();
                 updateDisplay();
                 System.out.println("Move");
-                Thread.sleep(elevatorSystem.timeToDestination(1, 1));
+                Thread.sleep(elevatorSystem.moveElevator(1, 1));
                 System.out.println("Move stop, open door");
                 updateDisplay();
                 Thread.sleep(2000);
@@ -109,7 +109,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 elevatorSystem.elevator1.closeDoor();
                 updateDisplay();
                 System.out.println("Move");
-                Thread.sleep(elevatorSystem.timeToDestination(2, 1));
+                Thread.sleep(elevatorSystem.moveElevator(2, 1));
                 System.out.println("Move stop, open door");
                 updateDisplay();
                 Thread.sleep(2000);
@@ -117,19 +117,19 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 updateDisplay();
                 break;
             case KeyEvent.VK_3 :    //user released non-numpad '3' key
-                Thread.sleep(elevatorSystem.timeToDestination(3, 1));
+                Thread.sleep(elevatorSystem.moveElevator(3, 1));
                 updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
-                Thread.sleep(elevatorSystem.timeToDestination(1, 2));
+                Thread.sleep(elevatorSystem.moveElevator(1, 2));
                 updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
-                Thread.sleep(elevatorSystem.timeToDestination(2, 2));
+                Thread.sleep(elevatorSystem.moveElevator(2, 2));
                 updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
-                Thread.sleep(elevatorSystem.timeToDestination(3, 2));
+                Thread.sleep(elevatorSystem.moveElevator(3, 2));
                 updateDisplay();
                 break;
             default: System.err.print("Invalid Key");
