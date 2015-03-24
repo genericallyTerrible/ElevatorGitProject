@@ -11,5 +11,38 @@ package STEMproj_TestPackage;
  * @author a-krause
  */
 public class Elevator {
+    private boolean doorOpen;
+    private int floor;
     
+    Elevator(int currentFloor)
+    {
+        floor = currentFloor;
+        doorOpen = true;
+    }
+    
+    public int getFloor()
+    {
+        return floor;
+    }
+    
+    public boolean isDoorOpen()
+    {
+        return doorOpen;
+    }
+    
+    public void pressDoorButton()
+    {
+        doorOpen = !doorOpen;
+    }
+    
+    public void goUp()
+    {
+        floor++;
+    }
+    
+    public void goDown()
+    {
+        if(!(floor < 1))
+            floor--;
+    }
 }

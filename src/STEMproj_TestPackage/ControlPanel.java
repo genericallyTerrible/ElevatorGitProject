@@ -11,5 +11,10 @@ package STEMproj_TestPackage;
  * @author a-krause
  */
 public class ControlPanel {
+    Elevator elevator;
     
+    ControlPanel()
+    {
+        elevator = new Elevator(0);
+    }
 }
