@@ -7,8 +7,10 @@
 package STEMproj_TestPackage;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 /**
  *
@@ -79,7 +81,32 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
         panel.setBackground(Color.white);
         label.setText("=][=");
     }
+    
+    public void keyTyped(KeyEvent e) {
+    }
 
+    public void keyPressed(KeyEvent e) {
+    }
+
+    public void keyReleased(KeyEvent e) {
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_1 :    //user released non-numpad '1' key
+                break;
+            case KeyEvent.VK_2 :    //user released non-numpad '2' key
+                break;
+            case KeyEvent.VK_3 :    //user released non-numpad '3' key
+                break;
+            case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
+                break;
+            case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
+                break;
+            case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
+                break;
+            default: System.err.print("Invalid Key");
+        }
+    }    
+        
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
