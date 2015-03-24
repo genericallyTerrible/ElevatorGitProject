@@ -14,10 +14,19 @@ public class ElevatorSystem{
     
     public Elevator elevator1;
     public Elevator elevator2;
+    public final int TIME_TO_CHANGE_ONE_FLOOR = 6000;
     
     public ElevatorSystem(Elevator first, Elevator second){
         elevator1 = first;
         elevator2 = second;
+    }
+    
+    public int timeToDestination(int floorOfCall, int elevatorNumber){
+        Elevator thisElevator;
+             if(elevatorNumber == 1) thisElevator = elevator1;
+        else if(elevatorNumber == 2) thisElevator = elevator2;
+        else return -1;
+        return Math.abs(thisElevator.getFloor() - floorOfCall) * TIME_TO_CHANGE_ONE_FLOOR;
     }
     
     public void callNearestElevator(int floorOfCall){
