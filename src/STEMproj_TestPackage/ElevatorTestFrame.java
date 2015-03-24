@@ -6,6 +6,8 @@
 
 package STEMproj_TestPackage;
 
+import java.awt.Color;
+
 /**
  *
  * @author a-krause
@@ -17,6 +19,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
      */
     public ElevatorTestFrame() {
         initComponents();
+        door3Panel.setBackground(Color.GREEN);
+        door4Panel.setBackground(Color.YELLOW);
     }
 
     /**
@@ -31,11 +35,17 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
         elevator1FloorLabel = new javax.swing.JLabel();
         elevator2FloorLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        door1Panel = new javax.swing.JPanel();
         door1Label = new javax.swing.JLabel();
+        door2Panel = new javax.swing.JPanel();
         door2Label = new javax.swing.JLabel();
+        door3Panel = new javax.swing.JPanel();
         door3Label = new javax.swing.JLabel();
+        door4Panel = new javax.swing.JPanel();
         door4Label = new javax.swing.JLabel();
+        door5Panel = new javax.swing.JPanel();
         door5Label = new javax.swing.JLabel();
+        door6Panel = new javax.swing.JPanel();
         door6Label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -52,70 +62,179 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
         door1Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door1Label.setText("=][=");
 
+        javax.swing.GroupLayout door1PanelLayout = new javax.swing.GroupLayout(door1Panel);
+        door1Panel.setLayout(door1PanelLayout);
+        door1PanelLayout.setHorizontalGroup(
+            door1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door1PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door1Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door1PanelLayout.setVerticalGroup(
+            door1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door1PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door1Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         door2Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door2Label.setText("=][=");
+
+        javax.swing.GroupLayout door2PanelLayout = new javax.swing.GroupLayout(door2Panel);
+        door2Panel.setLayout(door2PanelLayout);
+        door2PanelLayout.setHorizontalGroup(
+            door2PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door2PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door2Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door2PanelLayout.setVerticalGroup(
+            door2PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door2PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door2Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        door3Panel.setBackground(new java.awt.Color(102, 255, 102));
 
         door3Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door3Label.setText("]    [");
 
+        javax.swing.GroupLayout door3PanelLayout = new javax.swing.GroupLayout(door3Panel);
+        door3Panel.setLayout(door3PanelLayout);
+        door3PanelLayout.setHorizontalGroup(
+            door3PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door3PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door3Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door3PanelLayout.setVerticalGroup(
+            door3PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door3PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door3Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        door4Panel.setBackground(new java.awt.Color(255, 255, 0));
+
         door4Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door4Label.setText("=][=");
+
+        javax.swing.GroupLayout door4PanelLayout = new javax.swing.GroupLayout(door4Panel);
+        door4Panel.setLayout(door4PanelLayout);
+        door4PanelLayout.setHorizontalGroup(
+            door4PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door4PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door4Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door4PanelLayout.setVerticalGroup(
+            door4PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door4PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door4Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         door5Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door5Label.setText("=][=");
 
+        javax.swing.GroupLayout door5PanelLayout = new javax.swing.GroupLayout(door5Panel);
+        door5Panel.setLayout(door5PanelLayout);
+        door5PanelLayout.setHorizontalGroup(
+            door5PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door5PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door5Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door5PanelLayout.setVerticalGroup(
+            door5PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door5PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door5Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         door6Label.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         door6Label.setText("=][=");
+
+        javax.swing.GroupLayout door6PanelLayout = new javax.swing.GroupLayout(door6Panel);
+        door6Panel.setLayout(door6PanelLayout);
+        door6PanelLayout.setHorizontalGroup(
+            door6PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door6PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door6Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        door6PanelLayout.setVerticalGroup(
+            door6PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(door6PanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(door6Label)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(128, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel3))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(elevator1FloorLabel)
-                        .addGap(83, 83, 83)
-                        .addComponent(elevator2FloorLabel))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(door3Label)
-                            .addComponent(door2Label)
-                            .addComponent(door1Label))
-                        .addGap(44, 44, 44)
+                        .addGap(117, 117, 117)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(door4Label)
-                            .addComponent(door5Label)
-                            .addComponent(door6Label))))
-                .addGap(124, 124, 124))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(door2Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(door1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(door3Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(door4Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(door5Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(door6Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(27, 27, 27)
+                                .addComponent(elevator1FloorLabel)
+                                .addGap(78, 78, 78)
+                                .addComponent(elevator2FloorLabel))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(159, 159, 159)
+                        .addComponent(jLabel3)))
+                .addContainerGap(121, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(elevator2FloorLabel)
                     .addComponent(elevator1FloorLabel))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(door1Label)
-                    .addComponent(door4Label))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(door5Label)
-                    .addComponent(door2Label))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(door6Label)
-                    .addComponent(door3Label))
-                .addContainerGap(44, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(door4Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(door2Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(door5Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(door3Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(door6Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(door1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -158,11 +277,17 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel door1Label;
+    private javax.swing.JPanel door1Panel;
     private javax.swing.JLabel door2Label;
+    private javax.swing.JPanel door2Panel;
     private javax.swing.JLabel door3Label;
+    private javax.swing.JPanel door3Panel;
     private javax.swing.JLabel door4Label;
+    private javax.swing.JPanel door4Panel;
     private javax.swing.JLabel door5Label;
+    private javax.swing.JPanel door5Panel;
     private javax.swing.JLabel door6Label;
+    private javax.swing.JPanel door6Panel;
     private javax.swing.JLabel elevator1FloorLabel;
     private javax.swing.JLabel elevator2FloorLabel;
     private javax.swing.JLabel jLabel3;
