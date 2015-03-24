@@ -30,9 +30,14 @@ public class Elevator {
         return doorOpen;
     }
     
-    public void pressDoorButton()
+    public void openDoor()
     {
-        doorOpen = !doorOpen;
+        doorOpen = true;
+    }
+    
+    public void closeDoor()
+    {
+        doorOpen = false;
     }
     
     public void goUp()
