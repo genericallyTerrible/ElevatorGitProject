@@ -26,6 +26,11 @@ public class ElevatorSystem{
         //Check who is closer
         if(Math.abs(elevator1.getFloor() - floorOfCall) <= Math.abs(elevator2.getFloor() - floorOfCall)){
             //elevator1 is closer
+            
+            if(elevator1.isDoorOpen()){
+                elevator1.closeDoor();
+            }
+            
             //Executes while elevator1 is above
             while(elevator1.getFloor() > floorOfCall){
                 elevator1.goDown();
@@ -35,8 +40,15 @@ public class ElevatorSystem{
                 elevator1.goUp();
             }
             
+            elevator1.openDoor();
+            
         } else {
             //elevator2 is closer
+            
+            if(elevator2.isDoorOpen()){
+                elevator2.closeDoor();
+            }
+            
             //Executes while elevator2 is above
             while(elevator2.getFloor() > floorOfCall){
                 elevator2.goDown();
@@ -45,6 +57,9 @@ public class ElevatorSystem{
             while(elevator2.getFloor() < floorOfCall){
                 elevator2.goUp();
             }
+            
+            elevator2.openDoor();
+            
         }
     }
     
