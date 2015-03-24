@@ -8,27 +8,28 @@ package STEMproj_TestPackage;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+//import java.awt.event.KeyListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.Timer;
+//import javax.swing.Timer;
 
 /**
  *
  * @author a-krause
  */
-public class ElevatorTestFrame extends javax.swing.JFrame {
+public class ElevatorTestFrame extends javax.swing.JFrame{
 
     ElevatorSystem elevatorSystem;
-    Elevator elevator1;
-    Elevator elevator2;
     
     /**
      * Creates new form ElevatorTestFrame
      */
     public ElevatorTestFrame() {
         initComponents();
-        elevator1 = new Elevator(1);
-        elevator2 = new Elevator(3);
+        Elevator elevator1 = new Elevator(1);
+        Elevator elevator2 = new Elevator(3);
         elevator2.closeDoor();
         elevatorSystem = new ElevatorSystem(elevator1, elevator2);
         updateDisplay();
@@ -37,22 +38,22 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
     public void updateDisplay()
     {
         resetAll();
-        elevator1FloorLabel.setText("" + elevator1.getFloor());
-        elevator2FloorLabel.setText("" + elevator2.getFloor());
+        elevator1FloorLabel.setText("" + elevatorSystem.elevator1.getFloor());
+        elevator2FloorLabel.setText("" + elevatorSystem.elevator2.getFloor());
         
-        if(elevator1.getFloor() == 1)
-            elevatorColorChange(elevator1, door3Panel, door3Label);
-        else if(elevator1.getFloor() == 2)
-            elevatorColorChange(elevator1, door2Panel, door2Label);
-        else if(elevator1.getFloor() == 3)
-            elevatorColorChange(elevator1, door1Panel, door1Label);
+        if(elevatorSystem.elevator1.getFloor() == 1)
+            elevatorColorChange(elevatorSystem.elevator1, door3Panel, door3Label);
+        else if(elevatorSystem.elevator1.getFloor() == 2)
+            elevatorColorChange(elevatorSystem.elevator1, door2Panel, door2Label);
+        else if(elevatorSystem.elevator1.getFloor() == 3)
+            elevatorColorChange(elevatorSystem.elevator1, door1Panel, door1Label);
         
-        if(elevator2.getFloor() == 1)
-            elevatorColorChange(elevator2, door6Panel, door6Label);
-        else if(elevator2.getFloor() == 2)
-            elevatorColorChange(elevator2, door5Panel, door5Label);
-        else if(elevator2.getFloor() == 3)
-            elevatorColorChange(elevator2, door4Panel, door4Label);
+        if(elevatorSystem.elevator2.getFloor() == 1)
+            elevatorColorChange(elevatorSystem.elevator2, door6Panel, door6Label);
+        else if(elevatorSystem.elevator2.getFloor() == 2)
+            elevatorColorChange(elevatorSystem.elevator2, door5Panel, door5Label);
+        else if(elevatorSystem.elevator2.getFloor() == 3)
+            elevatorColorChange(elevatorSystem.elevator2, door4Panel, door4Label);
     }
     
     private void elevatorColorChange(Elevator elevator, JPanel panel, JLabel label)
@@ -63,7 +64,10 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
             label.setText("]    [");
         }
         else
+        {
             panel.setBackground(Color.YELLOW);
+            label.setText("=][=");
+        }
     }
     
     private void resetAll()
@@ -82,30 +86,55 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
         label.setText("=][=");
     }
     
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void keyPressed(KeyEvent e) {
-    }
-
-    public void keyReleased(KeyEvent e) {
+    //@Override
+    //currently a work in progress
+    public void keyTyped(KeyEvent e) throws InterruptedException {
         switch(e.getKeyCode()) {
             case KeyEvent.VK_1 :    //user released non-numpad '1' key
+                System.out.println("Close door");
+                Thread.sleep(2000);
+                elevatorSystem.elevator1.closeDoor();
+                updateDisplay();
+                System.out.println("Move");
+                Thread.sleep(elevatorSystem.timeToDestination(1, 1));
+                System.out.println("Move stop, open door");
+                updateDisplay();
+                Thread.sleep(2000);
+                elevatorSystem.elevator1.openDoor();
+                updateDisplay();
                 break;
             case KeyEvent.VK_2 :    //user released non-numpad '2' key
+                System.out.println("Close door");
+                Thread.sleep(2000);
+                elevatorSystem.elevator1.closeDoor();
+                updateDisplay();
+                System.out.println("Move");
+                Thread.sleep(elevatorSystem.timeToDestination(2, 1));
+                System.out.println("Move stop, open door");
+                updateDisplay();
+                Thread.sleep(2000);
+                elevatorSystem.elevator1.openDoor();
+                updateDisplay();
                 break;
             case KeyEvent.VK_3 :    //user released non-numpad '3' key
+                Thread.sleep(elevatorSystem.timeToDestination(3, 1));
+                updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
+                Thread.sleep(elevatorSystem.timeToDestination(1, 2));
+                updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
+                Thread.sleep(elevatorSystem.timeToDestination(2, 2));
+                updateDisplay();
                 break;
             case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
+                Thread.sleep(elevatorSystem.timeToDestination(3, 2));
+                updateDisplay();
                 break;
             default: System.err.print("Invalid Key");
         }
-    }    
-        
+    } 
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -137,6 +166,11 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         elevator1FloorLabel.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         elevator1FloorLabel.setText("1");
@@ -356,6 +390,14 @@ public class ElevatorTestFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        try {
+            keyTyped(evt);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ElevatorTestFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_formKeyPressed
 
     /**
      * @param args the command line arguments
