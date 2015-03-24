@@ -34,10 +34,10 @@
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="door2Panel" min="-2" max="-2" attributes="0"/>
-                          <Component id="door1Panel" min="-2" max="-2" attributes="0"/>
-                          <Component id="door3Panel" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="door2Panel" alignment="1" max="32767" attributes="0"/>
+                          <Component id="door1Panel" alignment="1" max="32767" attributes="0"/>
+                          <Component id="door3Panel" alignment="1" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">

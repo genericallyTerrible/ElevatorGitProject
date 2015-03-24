@@ -6,6 +6,10 @@
 
 package STEMproj_TestPackage;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.Timer;
+
 /**
  *
  * @author a-krause
@@ -14,20 +18,46 @@ public class ElevatorSystem{
     
     public Elevator elevator1;
     public Elevator elevator2;
+    private Elevator currentElevator;
     public final int TIME_TO_CHANGE_ONE_FLOOR = 6000;
+    public final int TIME_TO_OPEN_CLOSE_DOORS = 2000;
+    
+    Timer doorCloseTimer;
     
     public ElevatorSystem(Elevator first, Elevator second){
         elevator1 = first;
         elevator2 = second;
+        doorCloseTimer = new Timer(TIME_TO_OPEN_CLOSE_DOORS, doorCloses);
     }
     
-    public int timeToDestination(int floorOfCall, int elevatorNumber){
-        Elevator thisElevator;
-             if(elevatorNumber == 1) thisElevator = elevator1;
-        else if(elevatorNumber == 2) thisElevator = elevator2;
+    public int moveElevator(int floorOfCall, int elevatorNumber){
+        //Calculate time needed to move
+             if(elevatorNumber == 1) currentElevator = elevator1;
+        else if(elevatorNumber == 2) currentElevator = elevator2;
         else return -1;
-        return Math.abs(thisElevator.getFloor() - floorOfCall) * TIME_TO_CHANGE_ONE_FLOOR;
+        int totalTime = 0;
+        totalTime += Math.abs(currentElevator.getFloor() - floorOfCall) * TIME_TO_CHANGE_ONE_FLOOR;
+        totalTime += TIME_TO_OPEN_CLOSE_DOORS;
+        
+        //Move the elevator
+        if(currentElevator.isDoorOpen()) {
+            totalTime += TIME_TO_OPEN_CLOSE_DOORS;
+            doorCloseTimer.start();
+        } else {
+            
+        }
+        
+        
+        
+        return totalTime;
     }
+    
+     ActionListener doorCloses = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            currentElevator.closeDoor();
+            //call elevator movement
+        }
+     };
     
     public void callNearestElevator(int floorOfCall){
         //Check who is closer
