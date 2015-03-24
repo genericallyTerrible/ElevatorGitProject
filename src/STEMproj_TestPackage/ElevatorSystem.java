@@ -6,13 +6,16 @@
 
 package STEMproj_TestPackage;
 
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 /**
  *
  * @author a-krause
  */
-public class ElevatorSystem{
+public class ElevatorSystem implements KeyListener{
     
     public Elevator elevator1;
     public Elevator elevator2;
@@ -26,11 +29,6 @@ public class ElevatorSystem{
         //Check who is closer
         if(Math.abs(elevator1.getFloor() - floorOfCall) <= Math.abs(elevator2.getFloor() - floorOfCall)){
             //elevator1 is closer
-            
-            if(elevator1.isDoorOpen()){
-                elevator1.closeDoor();
-            }
-            
             //Executes while elevator1 is above
             while(elevator1.getFloor() > floorOfCall){
                 elevator1.goDown();
@@ -40,15 +38,8 @@ public class ElevatorSystem{
                 elevator1.goUp();
             }
             
-            elevator1.openDoor();
-            
         } else {
             //elevator2 is closer
-            
-            if(elevator2.isDoorOpen()){
-                elevator2.closeDoor();
-            }
-            
             //Executes while elevator2 is above
             while(elevator2.getFloor() > floorOfCall){
                 elevator2.goDown();
@@ -57,11 +48,37 @@ public class ElevatorSystem{
             while(elevator2.getFloor() < floorOfCall){
                 elevator2.goUp();
             }
-            
-            elevator2.openDoor();
-            
         }
     }
     
+    private Timer timer;
+    
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_1 :    //user released non-numpad '1' key
+                break;
+            case KeyEvent.VK_2 :    //user released non-numpad '2' key
+                break;
+            case KeyEvent.VK_3 :    //user released non-numpad '3' key
+                break;
+            case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
+                break;
+            case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
+                break;
+            case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
+                break;
+            default: System.err.print("Invalid Key");
+        }
+    }
+
 }
 
