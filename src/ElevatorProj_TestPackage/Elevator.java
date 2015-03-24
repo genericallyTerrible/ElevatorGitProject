@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package STEMproj_TestPackage;
+package ElevatorProj_TestPackage;
 
 /**
  *
