@@ -7,10 +7,13 @@
 package ElevatorProj_TestPackage;
 
 //import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Timer;
 
 /**
  *
@@ -21,18 +24,43 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     /* Depricated
     ElevatorSystem elevatorSystem;
     */
-    private ArrayList<ElevatorLabel> shaft1;
-    private ArrayList<ElevatorLabel> shaft2;
+    private static final String MOVE_UP   = "up";
+    private static final String MOVE_DOWN = "down";
+    private static final String NO_MOVE   = "none";
+    private static final int DOOR_TIME     = 2000;
+    private static final int ELEVATOR_TIME = 6000;
+    
+    private ArrayList<DoorLabel> shaft0;
+    private ArrayList<DoorLabel> shaft1;
+    private ArrayList<DoorLabel> shaftInUse;
+    private int currentShaft;
+    private DoorLabel doorInUse;
+    private DoorLabel nextDoor;
+    private String moveDirection;
+    private boolean[] doorIsOpen = {true, true};
     private int[] floorTracker = {0, 0};
-    private boolean[] doorTracker = {true, true};
+    private static Timer OpenDoorsTimer;
+    private static Timer CloseDoorsTimer;
+    private static Timer MoveElevatorTimer;
+    
+    private boolean canAcceptInput = true;
+    
     /**
      * Creates new form ElevatorTestFrame
      */
     public ElevatorTestFrame() {
         
+        shaft0 = new ArrayList<>();
         shaft1 = new ArrayList<>();
-        shaft2 = new ArrayList<>();
-        ElevatorLabel newElevator;
+        DoorLabel newDoor;
+        
+        OpenDoorsTimer    = new Timer(DOOR_TIME, openDoors);
+        CloseDoorsTimer   = new Timer(DOOR_TIME, closeDoors);
+        MoveElevatorTimer = new Timer(ELEVATOR_TIME, moveElevator);
+        OpenDoorsTimer.setRepeats(false);
+        CloseDoorsTimer.setRepeats(false);
+        MoveElevatorTimer.setRepeats(false);
+        
         initComponents();
         /*Depricated
         Elevator elevator1 = new Elevator(1);
@@ -41,34 +69,34 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         elevatorSystem = new ElevatorSystem(elevator1, elevator2);
         */
         
-        newElevator = new ElevatorLabel("E1F1");
-        elevator1Floor1.add(newElevator);
-        shaft1.add(newElevator);
+        newDoor = new DoorLabel("E1F1");
+        elevator1Floor1.add(newDoor);
+        shaft0.add(newDoor);
         
-        newElevator = new ElevatorLabel("E1F2");
-        elevator1Floor2.add(newElevator);
-        shaft1.add(newElevator);
+        newDoor = new DoorLabel("E1F2");
+        elevator1Floor2.add(newDoor);
+        shaft0.add(newDoor);
         
-        newElevator = new ElevatorLabel("E1F3");
-        elevator1Floor3.add(newElevator);
-        shaft1.add(newElevator);
+        newDoor = new DoorLabel("E1F3");
+        elevator1Floor3.add(newDoor);
+        shaft0.add(newDoor);
         
-        newElevator = new ElevatorLabel("E2F1");
-        elevator2Floor1.add(newElevator);
-        shaft2.add(newElevator);
+        newDoor = new DoorLabel("E2F1");
+        elevator2Floor1.add(newDoor);
+        shaft1.add(newDoor);
         
-        newElevator = new ElevatorLabel("E2F2");
-        elevator2Floor2.add(newElevator);
-        shaft2.add(newElevator);
+        newDoor = new DoorLabel("E2F2");
+        elevator2Floor2.add(newDoor);
+        shaft1.add(newDoor);
         
-        newElevator = new ElevatorLabel("E2F3");
-        elevator2Floor3.add(newElevator);
-        shaft2.add(newElevator);
+        newDoor = new DoorLabel("E2F3");
+        elevator2Floor3.add(newDoor);
+        shaft1.add(newDoor);
         
-        shaft1.get(0).setBackground(ElevatorLabel.PRIMARY);
+        shaft0.get(0).setBackground(DoorLabel.SECONDARY);
+        shaft0.get(0).setText("=][=");
+        shaft1.get(0).setBackground(DoorLabel.PRIMARY);
         shaft1.get(0).setText("]  [");
-        shaft2.get(0).setBackground(ElevatorLabel.PRIMARY);
-        shaft2.get(0).setText("]  [");
         elevator1Tracker.setText("" + floorTracker[0]);
         elevator2Tracker.setText("" + floorTracker[0]);
     }
@@ -76,95 +104,150 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     //Checks if the passed elevator 'shaft' is valid
     //If not, prints a system error and returns null
     //If it is, it returns the Arraylist for that 'shaft'
-    private ArrayList<ElevatorLabel> checkShaft(int elevatorShaft) {
+    private ArrayList<DoorLabel> checkShaft(int elevatorShaft) {
         ArrayList thisShaft;
-        if (elevatorShaft == 1) thisShaft = shaft1;
-        else if (elevatorShaft == 2) thisShaft = shaft2;
+        if      (elevatorShaft == 0) thisShaft = shaft0;
+        else if (elevatorShaft == 1) thisShaft = shaft1;
         else {
             System.err.println(elevatorShaft + " is not a valid elevator shaft");
+            System.out.print("Please refer to elevators by index value");
             return null;
         }
+        shaftInUse = thisShaft;
+        currentShaft = elevatorShaft;
+        doorInUse = shaftInUse.get(floorTracker[currentShaft]);
         return thisShaft;
     }
     
     //Opens the doors on the elevator in the desired 'shaft'
     private void openDoors(int elevatorShaft) {
-        ElevatorLabel thisElevator;
-        ArrayList<ElevatorLabel> thisShaft = checkShaft(elevatorShaft);
-        if(thisShaft != null) {
-            thisElevator = thisShaft.get(floorTracker[elevatorShaft - 1]);
-            thisElevator.openDoors();
-            doorTracker[elevatorShaft - 1] = true;
+        if(checkShaft(elevatorShaft) != null) {
+            OpenDoorsTimer.start();            
+        } else {
+            System.err.println(elevatorShaft + " is not a valid Shaft");
         }
     }
     
+    ActionListener openDoors = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            if(shaftInUse != null) {
+                doorInUse.openDoors();
+                doorIsOpen[currentShaft] = true;
+                System.out.println("Timer complete");
+            } else {
+                System.err.println("Timer failed.");
+            }
+            canAcceptInput = true;
+        }};
+    
     //Closes the doors on the elevator in the desired 'shaft'
     private void closeDoors(int elevatorShaft) {
-        ElevatorLabel thisElevator;
-        ArrayList<ElevatorLabel> thisShaft = checkShaft(elevatorShaft);
+        if(checkShaft(elevatorShaft) != null) {
+            CloseDoorsTimer.start();            
+        } else {
+            System.err.println(elevatorShaft + " is not a valid Shaft");
+        }
+    }
+    
+    ActionListener closeDoors = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            if(shaftInUse != null) {
+                doorInUse.closeDoors();
+                doorIsOpen[currentShaft] = false;
+                System.out.println("Timer complete");
+            } else {
+                System.err.println("Timer failed.");
+            }
+            canAcceptInput = true;
+        }};
+    
+    ActionListener moveElevator = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            
+            
+            
+        }};
+    
+    //NON-FUNCTIONAL!!!!
+    //Currently a work in progress
+    private void moveElevatorUp(int elevatorShaft) {
+        ArrayList<DoorLabel> thisShaft = checkShaft(elevatorShaft);
         if(thisShaft != null) {
-            thisElevator = thisShaft.get(floorTracker[elevatorShaft - 1]);
-            thisElevator.closeDoors();
-            doorTracker[elevatorShaft - 1] = false;
+            if(floorTracker[elevatorShaft] == 2){
+                System.out.println("Elevator is already at top floor");
+            } else {
+                doorInUse = thisShaft.get(floorTracker[elevatorShaft]);
+                nextDoor = thisShaft.get(floorTracker[elevatorShaft] + 1);
+                closeDoors(elevatorShaft);
+                
+                
+                
+                doorInUse.setEmpty();
+                floorTracker[elevatorShaft]++;
+                nextDoor.setFilledClosed();
+                openDoors(elevatorShaft);
+            }
         }
     }
     
     //@Override
     //currently a work in progress
-    public void keyTyped(KeyEvent e) throws InterruptedException {
-        switch(e.getKeyCode()) {
-            case KeyEvent.VK_1 :    //user released non-numpad '1' key
-                openDoors(3);
-                
-                break;
-                
-            case KeyEvent.VK_2 :    //user released non-numpad '2' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_3 :    //user released non-numpad '3' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_W : //user released keyboard 'w' key
-            
-                
-                break;
-                
-            case KeyEvent.VK_A : //user released keyboard 'a' key
+    public void keyReleased(KeyEvent e) throws InterruptedException {
+        if(canAcceptInput){
+            canAcceptInput = false;
+            switch(e.getKeyCode()) {
+                case KeyEvent.VK_1 :    //user released non-numpad '1' key
+                    openDoors(0);
+                    break;
 
-                
-                break;
-                
-            case KeyEvent.VK_S : //user released keybaord 's' key
-                
-                
-                break;
-                
-            case KeyEvent.VK_Z : //user released keyboard 'z' key
-                
-                
-                break;
-                
-            default: 
-                System.err.println("Invalid Key Stroke");
+                case KeyEvent.VK_2 :    //user released non-numpad '2' key
+                    closeDoors(0);
+                    break;
+
+                case KeyEvent.VK_3 :    //user released non-numpad '3' key
+
+
+                    break;
+
+                case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
+
+
+                    break;
+
+                case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
+
+
+                    break;
+
+                case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
+
+
+                    break;
+
+                case KeyEvent.VK_W : //user released keyboard 'w' key
+
+
+                    break;
+
+                case KeyEvent.VK_A : //user released keyboard 'a' key
+
+
+                    break;
+
+                case KeyEvent.VK_S : //user released keybaord 's' key
+
+
+                    break;
+
+                case KeyEvent.VK_Z : //user released keyboard 'z' key
+
+
+                    break;
+
+
+                default:
+                    System.err.println(e.getExtendedKeyCode() + " is an invalid Key Stroke");
+            }
         }
     } 
     
@@ -194,8 +277,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
         addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
             }
         });
 
@@ -335,13 +418,13 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
         try {
-            keyTyped(evt);
+            keyReleased(evt);
         } catch (InterruptedException ex) {
             Logger.getLogger(ElevatorTestFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_formKeyPressed
+    }//GEN-LAST:event_formKeyReleased
 
     /**
      * @param args the command line arguments

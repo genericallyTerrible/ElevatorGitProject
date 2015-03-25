@@ -6,28 +6,26 @@
 package ElevatorProj_TestPackage;
 
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
-import javax.swing.UIManager;
 
 /**
  *
  * @author John
  */
-public class ElevatorLabel extends JLabel {
+public class DoorLabel extends JLabel {
     String name = "";
     public static final Color PRIMARY   = new Color( 84, 238,  73);
     public static final Color SECONDARY = new Color(255, 255,   0);
     public static final Color NONE      = new Color(214, 217, 223);
+    
     /**
      * Creates new form ElevatorLabel
      */
-    public ElevatorLabel() {
+    public DoorLabel() {
         initComponents();
     }
     //Overloaded constructor
-    public ElevatorLabel(String name) {
+    public DoorLabel(String name) {
         initComponents();
         this.name = name;
     }
@@ -37,29 +35,22 @@ public class ElevatorLabel extends JLabel {
     }
 
     public void openDoors() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ElevatorLabel.class.getName()).log(Level.SEVERE, null, ex);
-        }
         
         this.setText("]  [");
         this.setBackground(PRIMARY);
     }
     
     public void closeDoors() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ElevatorLabel.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
         this.setText("=][=");
         this.setBackground(SECONDARY);
     }
     
-    public void noElevator() {
+    public void setEmpty() {
         this.setBackground(NONE);
+    }
+    
+    public void setFilledClosed() {
+        this.setBackground(SECONDARY);
     }
     
     /**
