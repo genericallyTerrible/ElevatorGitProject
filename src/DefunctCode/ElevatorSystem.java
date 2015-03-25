@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package ElevatorProj_TestPackage;
+package DefunctCode;
 
+import ElevatorProj_TestPackage.Elevator;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Timer;
