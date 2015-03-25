@@ -8,29 +8,31 @@ package ElevatorProj_TestPackage;
 
 //import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import java.awt.event.KeyListener;
-//import javax.swing.JLabel;
-//import javax.swing.JPanel;
-//import javax.swing.Timer;
 
 /**
  *
- * @author a-krause
+ * @authors Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class ElevatorTestFrame extends javax.swing.JFrame{
 
     /* Depricated
     ElevatorSystem elevatorSystem;
     */
-    
-    NewElevatorSystem elevatorSystem;
-    
+    private ArrayList<ElevatorLabel> elevator1;
+    private ArrayList<ElevatorLabel> elevator2;
+    private int[] floorTracker = {0, 0};
+    private boolean[] doorTracker = {true, true};
     /**
      * Creates new form ElevatorTestFrame
      */
     public ElevatorTestFrame() {
+        
+        elevator1 = new ArrayList<>();
+        elevator2 = new ArrayList<>();
+        ElevatorLabel newElevator;
         initComponents();
         /*Depricated
         Elevator elevator1 = new Elevator(1);
@@ -38,64 +40,65 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         elevator2.closeDoor();
         elevatorSystem = new ElevatorSystem(elevator1, elevator2);
         */
-        elevatorSystem = new NewElevatorSystem();
-        ElevatorSystemPanel.add(elevatorSystem);
+        
+        newElevator = new ElevatorLabel("E1F1");
+        elevator1Floor1.add(newElevator);
+        elevator1.add(newElevator);
+        
+        newElevator = new ElevatorLabel("E1F2");
+        elevator1Floor2.add(newElevator);
+        elevator1.add(newElevator);
+        
+        newElevator = new ElevatorLabel("E1F3");
+        elevator1Floor3.add(newElevator);
+        elevator1.add(newElevator);
+        
+        newElevator = new ElevatorLabel("E2F1");
+        elevator2Floor1.add(newElevator);
+        elevator2.add(newElevator);
+        
+        newElevator = new ElevatorLabel("E2F2");
+        elevator2Floor2.add(newElevator);
+        elevator2.add(newElevator);
+        
+        newElevator = new ElevatorLabel("E2F3");
+        elevator2Floor3.add(newElevator);
+        elevator2.add(newElevator);
+        
+        elevator1.get(0).setBackground(ElevatorLabel.PRIMARY);
+        elevator1.get(0).setText("]  [");
+        elevator2.get(0).setBackground(ElevatorLabel.PRIMARY);
+        elevator2.get(0).setText("]  [");
+        elevator1Tracker.setText("" + floorTracker[0]);
+        elevator2Tracker.setText("" + floorTracker[0]);
     }
     
-    /*Depricated
-    public void updateDisplay()
-    {
-    resetAll();
-    elevator1FloorLabel.setText("" + elevatorSystem.elevator1.getFloor());
-    elevator2FloorLabel.setText("" + elevatorSystem.elevator2.getFloor());
-    
-    if(elevatorSystem.elevator1.getFloor() == 1)
-    elevatorColorChange(elevatorSystem.elevator1, door3Panel, door3Label);
-    else if(elevatorSystem.elevator1.getFloor() == 2)
-    elevatorColorChange(elevatorSystem.elevator1, door2Panel, door2Label);
-    else if(elevatorSystem.elevator1.getFloor() == 3)
-    elevatorColorChange(elevatorSystem.elevator1, door1Panel, door1Label);
-    
-    if(elevatorSystem.elevator2.getFloor() == 1)
-    elevatorColorChange(elevatorSystem.elevator2, door6Panel, door6Label);
-    else if(elevatorSystem.elevator2.getFloor() == 2)
-    elevatorColorChange(elevatorSystem.elevator2, door5Panel, door5Label);
-    else if(elevatorSystem.elevator2.getFloor() == 3)
-    elevatorColorChange(elevatorSystem.elevator2, door4Panel, door4Label);
-    }*/
-    
-    /* Depricated
-    private void elevatorColorChange(Elevator elevator, JPanel panel, JLabel label)
-    {
-    if(elevator.isDoorOpen())
-    {
-    panel.setBackground(Color.GREEN);
-    label.setText("]    [");
+    private ElevatorLabel checkValidity(int elevatorShaft) {
+        ElevatorLabel thisElevator;
+        if (elevatorShaft == 1) thisElevator = elevator1.get(floorTracker[0]);
+        else if (elevatorShaft == 2) thisElevator = elevator2.get(floorTracker[1]);
+        else {
+            System.err.println(elevatorShaft + " is not a valid elevator shaft");
+            return null;
+        }
+        return thisElevator;
     }
-    else
-    {
-    panel.setBackground(Color.YELLOW);
-    label.setText("=][=");
+    
+    private void openDoors(int elevatorShaft) {
+        ElevatorLabel thisElevator = checkValidity(elevatorShaft);
+        if(thisElevator != null) {
+            thisElevator.openDoors();
+            doorTracker[elevatorShaft - 1] = true;
+        }
     }
-    }*/
-    
-    /* Depricated
-    private void resetAll()
-    {
-    reset(door1Panel, door1Label);
-    reset(door2Panel, door2Label);
-    reset(door3Panel, door3Label);
-    reset(door4Panel, door4Label);
-    reset(door5Panel, door5Label);
-    reset(door6Panel, door6Label);
-    }*/
-    
-    /*Depricated
-    private void reset(JPanel panel, JLabel label)
-    {
-    panel.setBackground(Color.white);
-    label.setText("=][=");
-    }*/
+        
+    private void closeDoors(int elevatorShaft) {
+        ElevatorLabel thisElevator = checkValidity(elevatorShaft);
+        if(thisElevator != null) {
+            thisElevator.closeDoors();
+            doorTracker[elevatorShaft - 1] = false;
+        }
+    }
     
     //@Override
     //currently a work in progress
@@ -153,7 +156,6 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 
             default: 
                 System.err.println("Invalid Key Stroke");
-                elevatorSystem.setDoorClosed(2, 1);
         }
     } 
     
@@ -166,12 +168,19 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        elevator1Tracker = new javax.swing.JLabel();
+        elevator2Tracker = new javax.swing.JLabel();
         frameTitle = new javax.swing.JLabel();
         floor3InstructionsDown = new javax.swing.JLabel();
         floor2InstructionsUp = new javax.swing.JLabel();
         floor2InstructionsDown = new javax.swing.JLabel();
         floor1InstructionsUp = new javax.swing.JLabel();
-        ElevatorSystemPanel = new javax.swing.JPanel();
+        elevator1Floor3 = new javax.swing.JPanel();
+        elevator2Floor3 = new javax.swing.JPanel();
+        elevator2Floor2 = new javax.swing.JPanel();
+        elevator1Floor2 = new javax.swing.JPanel();
+        elevator1Floor1 = new javax.swing.JPanel();
+        elevator2Floor1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -180,6 +189,16 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 formKeyPressed(evt);
             }
         });
+
+        elevator1Tracker.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        elevator1Tracker.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        elevator1Tracker.setText("#");
+        elevator1Tracker.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        elevator2Tracker.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
+        elevator2Tracker.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        elevator2Tracker.setText("#");
+        elevator2Tracker.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         frameTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         frameTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -194,10 +213,35 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
 
         floor1InstructionsUp.setText("Up: Z");
 
-        ElevatorSystemPanel.setMaximumSize(new java.awt.Dimension(195, 265));
-        ElevatorSystemPanel.setMinimumSize(new java.awt.Dimension(195, 265));
-        ElevatorSystemPanel.setPreferredSize(new java.awt.Dimension(195, 265));
-        ElevatorSystemPanel.setLayout(new java.awt.GridBagLayout());
+        elevator1Floor3.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor3.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor3.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator1Floor3.setLayout(new java.awt.GridBagLayout());
+
+        elevator2Floor3.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor3.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor3.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator2Floor3.setLayout(new java.awt.GridBagLayout());
+
+        elevator2Floor2.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor2.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor2.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator2Floor2.setLayout(new java.awt.GridBagLayout());
+
+        elevator1Floor2.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor2.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor2.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator1Floor2.setLayout(new java.awt.GridBagLayout());
+
+        elevator1Floor1.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor1.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator1Floor1.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator1Floor1.setLayout(new java.awt.GridBagLayout());
+
+        elevator2Floor1.setMaximumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor1.setMinimumSize(new java.awt.Dimension(91, 40));
+        elevator2Floor1.setPreferredSize(new java.awt.Dimension(91, 40));
+        elevator2Floor1.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -206,38 +250,78 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(frameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(114, 114, 114)
+                        .addComponent(elevator1Tracker)
+                        .addGap(90, 90, 90)
+                        .addComponent(elevator2Tracker))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(floor3InstructionsDown)
+                        .addGap(18, 18, 18)
+                        .addComponent(elevator1Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(elevator2Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(floor3InstructionsDown)
                             .addComponent(floor2InstructionsUp)
-                            .addComponent(floor1InstructionsUp)
                             .addComponent(floor2InstructionsDown))
-                        .addGap(39, 39, 39)
-                        .addComponent(ElevatorSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(23, 23, 23)
+                        .addComponent(elevator1Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(elevator2Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(12, 12, 12)
+                        .addComponent(floor1InstructionsUp)
+                        .addGap(37, 37, 37)
+                        .addComponent(elevator1Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(elevator2Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {elevator1Floor1, elevator1Floor2, elevator1Floor3, elevator2Floor1, elevator2Floor2, elevator2Floor3});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(frameTitle)
+                .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(elevator1Tracker)
+                    .addComponent(elevator2Tracker))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(81, 81, 81)
-                        .addComponent(floor3InstructionsDown)
-                        .addGap(43, 43, 43)
-                        .addComponent(floor2InstructionsUp)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(floor2InstructionsDown)
-                        .addGap(42, 42, 42)
-                        .addComponent(floor1InstructionsUp))
+                        .addGap(9, 9, 9)
+                        .addComponent(floor3InstructionsDown))
+                    .addComponent(elevator2Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(elevator1Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(ElevatorSystemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(floor2InstructionsUp)
+                        .addGap(5, 5, 5)
+                        .addComponent(floor2InstructionsDown))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(elevator1Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(elevator2Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(21, 21, 21)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(floor1InstructionsUp))
+                    .addComponent(elevator1Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(elevator2Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
+
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {elevator1Floor1, elevator1Floor2, elevator1Floor3, elevator2Floor1, elevator2Floor2, elevator2Floor3});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -286,7 +370,14 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel ElevatorSystemPanel;
+    private javax.swing.JPanel elevator1Floor1;
+    private javax.swing.JPanel elevator1Floor2;
+    private javax.swing.JPanel elevator1Floor3;
+    private javax.swing.JLabel elevator1Tracker;
+    private javax.swing.JPanel elevator2Floor1;
+    private javax.swing.JPanel elevator2Floor2;
+    private javax.swing.JPanel elevator2Floor3;
+    private javax.swing.JLabel elevator2Tracker;
     private javax.swing.JLabel floor1InstructionsUp;
     private javax.swing.JLabel floor2InstructionsDown;
     private javax.swing.JLabel floor2InstructionsUp;
