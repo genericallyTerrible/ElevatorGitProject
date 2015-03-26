@@ -7,14 +7,9 @@
 package ElevatorProj_TestPackage;
 
 //import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.Timer;
 
 /**
  *
@@ -26,184 +21,21 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     ElevatorSystem elevatorSystem;
     */
 
-    private static final int DOOR_TIME     = 2000;
-    private static final int ELEVATOR_TIME = 6000;
-    
-    private ArrayList<DoorLabel> shaft0;
-    private ArrayList<DoorLabel> shaft1;
-    private ArrayList<DoorLabel> shaftInUse;
-    private ArrayList<JLabel> LabelTrackers;
-    private JLabel currentLabelTracker;
-    private int currentShaft;
-    private int goalFloor;
-    private DoorLabel doorInUse;
-    private DoorLabel nextDoor;
-    private boolean[] doorIsOpen = {true, true};
-    private int[] floorTracker = {0, 0};
-    private static Timer OpenDoorsTimer;
-    private static Timer CloseDoorsTimer;
-    private static Timer MoveElevatorTimer;
-    
-    private boolean canAcceptInput     = true;
-    private boolean doorCloseThenMoves = false;
+    private ElevatorShaft shaft1;
+    private ElevatorShaft shaft2;
     
     /**
      * Creates new form ElevatorTestFrame
      */
     public ElevatorTestFrame() {
         
-        shaft0        = new ArrayList<>();
-        shaft1        = new ArrayList<>();
-        LabelTrackers = new ArrayList<>();
-        
-        OpenDoorsTimer    = new Timer(DOOR_TIME, openDoors);
-        CloseDoorsTimer   = new Timer(DOOR_TIME, closeDoors);
-        MoveElevatorTimer = new Timer(ELEVATOR_TIME, moveElevator);
-        OpenDoorsTimer   .setRepeats(false);
-        CloseDoorsTimer  .setRepeats(false);
-        MoveElevatorTimer.setRepeats(false);
-        
         initComponents();
-        /*Depricated
-        Elevator elevator1 = new Elevator(1);
-        Elevator elevator2 = new Elevator(3);
-        elevator2.closeDoor();
-        elevatorSystem = new ElevatorSystem(elevator1, elevator2);
-        */
-        DoorLabel newDoor;
-        
-        newDoor = new DoorLabel("E1F1");
-        elevator1Floor1.add(newDoor);
-        shaft0.add(newDoor);
-        
-        newDoor = new DoorLabel("E1F2");
-        elevator1Floor2.add(newDoor);
-        shaft0.add(newDoor);
-        
-        newDoor = new DoorLabel("E1F3");
-        elevator1Floor3.add(newDoor);
-        shaft0.add(newDoor);
-        
-        newDoor = new DoorLabel("E2F1");
-        elevator2Floor1.add(newDoor);
-        shaft1.add(newDoor);
-        
-        newDoor = new DoorLabel("E2F2");
-        elevator2Floor2.add(newDoor);
-        shaft1.add(newDoor);
-        
-        newDoor = new DoorLabel("E2F3");
-        elevator2Floor3.add(newDoor);
-        shaft1.add(newDoor);
-        
-        LabelTrackers.add(elevator1Tracker);
-        LabelTrackers.add(elevator2Tracker);
-        
-        shaft0.get(0).setBackground(DoorLabel.PRIMARY);
-        shaft0.get(0).setText("]  [");
-        shaft1.get(0).setBackground(DoorLabel.PRIMARY);
-        shaft1.get(0).setText("]  [");
-        elevator1Tracker.setText("" + (floorTracker[0] + 1));
-        elevator2Tracker.setText("" + (floorTracker[0] + 1));
+
+        shaft1 = new ElevatorShaft("E1");
+        shaft1Panel.add(shaft1);
+        shaft2 = new ElevatorShaft("E2");
+        shaft2Panel.add(shaft2);
     }
-    
-    //Checks if the passed elevator 'shaft' is valid
-    //If not, prints a system error and returns null
-    //If it is, it returns the Arraylist for that 'shaft'
-    private ArrayList<DoorLabel> checkShaft(int elevatorShaft) {
-        ArrayList thisShaft;
-        if      (elevatorShaft == 0) thisShaft = shaft0;
-        else if (elevatorShaft == 1) thisShaft = shaft1;
-        else {
-            System.err.println(elevatorShaft + " is not a valid elevator shaft. ");
-            System.out.println("Please refer to elevators by index value");
-            return null;
-        }
-        shaftInUse = thisShaft;
-        currentShaft = elevatorShaft;
-        doorInUse = shaftInUse.get(floorTracker[currentShaft]);
-        return thisShaft;
-    }
-    
-    //Opens the doors on the elevator in the desired 'shaft'
-    private void openDoors(int elevatorShaft) {
-        if(checkShaft(elevatorShaft) != null && !doorIsOpen[currentShaft]) {
-            OpenDoorsTimer.start();            
-        } else {
-            System.err.println(elevatorShaft + " is not a valid Shaft");
-            canAcceptInput = true;
-        }
-    }
-    
-    ActionListener openDoors = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            if(shaftInUse != null) {
-                doorInUse.openDoors();
-                doorIsOpen[currentShaft] = true;
-            } else {
-                System.err.println("Timer failed.");
-            }
-            canAcceptInput = true;
-        }};
-    
-    //Closes the doors on the elevator in the desired 'shaft'
-    private void closeDoors(int elevatorShaft) {
-        if(checkShaft(elevatorShaft) != null && doorIsOpen[currentShaft]) {
-            CloseDoorsTimer.start();            
-        } else {
-            System.err.println(elevatorShaft + " is not a valid Shaft");
-            canAcceptInput = true;
-        }
-    }
-    
-    ActionListener closeDoors = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            if(shaftInUse != null) {
-                doorInUse.closeDoors();
-                doorIsOpen[currentShaft] = false;
-            } else {
-                System.err.println("Timer failed.");
-            }
-            if(doorCloseThenMoves){
-                doorCloseThenMoves = false;
-                MoveElevatorTimer.start();
-            } else {
-                canAcceptInput = true;
-            }
-        }};
-    
-    //Currently a work in progress
-    private void moveElevator_To_(int elevatorShaft, int destination) {
-        if(checkShaft(elevatorShaft) != null && (destination >= 0 && destination <= 2)) {
-            if      (destination > floorTracker[currentShaft]) nextDoor = shaftInUse.get(++floorTracker[currentShaft]);
-            else if (destination < floorTracker[currentShaft]) nextDoor = shaftInUse.get(--floorTracker[currentShaft]);
-            else { System.out.println("Elevator alread on that floor"); canAcceptInput = true; return; }
-            currentLabelTracker = LabelTrackers.get(currentShaft);
-            goalFloor = destination;
-            if(doorIsOpen[currentShaft]){
-                doorCloseThenMoves = true;
-                CloseDoorsTimer.start();
-            } else {
-                MoveElevatorTimer.start();
-            }
-        } else {
-            System.err.println("Failed to move elevator");
-            canAcceptInput = true;
-        }
-    }
-    
-    ActionListener moveElevator = new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-            currentLabelTracker.setText("" + (floorTracker[currentShaft] + 1));
-            doorInUse.setEmpty();
-            nextDoor.closeDoors();
-            if(floorTracker[currentShaft] == goalFloor){
-                doorInUse = nextDoor;
-                OpenDoorsTimer.start();
-            } else { 
-                moveElevator_To_(currentShaft, goalFloor);
-            }
-        }};
     
     private void callNearestElevator(int floorOfCall) {
         
@@ -212,57 +44,51 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     //@Override
     //currently a work in progress
     public void keyReleased(KeyEvent e) throws InterruptedException {
-        if(canAcceptInput){
-            canAcceptInput = false;
-            switch(e.getKeyCode()) {
-                case KeyEvent.VK_1 : //user released non-numpad '1' key
-                    moveElevator_To_(0, 0);
-                    break;
+        switch(e.getKeyCode()) {
+            case KeyEvent.VK_1 : //user released non-numpad '1' key
+                shaft1.moveElevatorTo(0);
+                break;
 
-                case KeyEvent.VK_2 : //user released non-numpad '2' key
-                    moveElevator_To_(0, 1);
-                    break;
+            case KeyEvent.VK_2 : //user released non-numpad '2' key
+                shaft1.moveElevatorTo(1);
+                break;
 
-                case KeyEvent.VK_3 : //user released non-numpad '3' key
-                    moveElevator_To_(0, 2);
-                    break;
+            case KeyEvent.VK_3 : //user released non-numpad '3' key
+                shaft1.moveElevatorTo(2);
+                break;
 
-                case KeyEvent.VK_NUMPAD1 : //user released numpad '1' key
-                    moveElevator_To_(1, 0);
-                    break;
+            case KeyEvent.VK_NUMPAD1 : //user released numpad '1' key
+                shaft2.moveElevatorTo(0);
+                break;
 
-                case KeyEvent.VK_NUMPAD2 : //user released numpad '2' key
-                    moveElevator_To_(1, 1);
-                    break;
+            case KeyEvent.VK_NUMPAD2 : //user released numpad '2' key
+                shaft2.moveElevatorTo(1);
+                break;
 
-                case KeyEvent.VK_NUMPAD3 : //user released numpad '3' key
-                    moveElevator_To_(1, 2);
-                    break;
+            case KeyEvent.VK_NUMPAD3 : //user released numpad '3' key
+                shaft2.moveElevatorTo(2);
+                break;
 
-                case KeyEvent.VK_W : //user released keyboard 'w' key
+            case KeyEvent.VK_W : //user released keyboard 'w' key
 
+                break;
 
-                    break;
+            case KeyEvent.VK_A : //user released keyboard 'a' key
 
-                case KeyEvent.VK_A : //user released keyboard 'a' key
+                break;
 
+            case KeyEvent.VK_S : //user released keybaord 's' key
 
-                    break;
+                break;
 
-                case KeyEvent.VK_S : //user released keybaord 's' key
+            case KeyEvent.VK_Z : //user released keyboard 'z' key
 
-
-                    break;
-
-                case KeyEvent.VK_Z : //user released keyboard 'z' key
+                break;
 
 
-                    break;
-
-
-                default:
-                    System.err.println(e.getExtendedKeyCode() + " is an invalid Key Stroke");
-            }
+            default:
+                System.err.println(e.getExtendedKeyCode() + " is an invalid Key Stroke");
+                
         }
     } 
     
@@ -275,19 +101,13 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        elevator1Tracker = new javax.swing.JLabel();
-        elevator2Tracker = new javax.swing.JLabel();
         frameTitle = new javax.swing.JLabel();
         floor3InstructionsDown = new javax.swing.JLabel();
         floor2InstructionsUp = new javax.swing.JLabel();
         floor2InstructionsDown = new javax.swing.JLabel();
         floor1InstructionsUp = new javax.swing.JLabel();
-        elevator1Floor3 = new javax.swing.JPanel();
-        elevator2Floor3 = new javax.swing.JPanel();
-        elevator2Floor2 = new javax.swing.JPanel();
-        elevator1Floor2 = new javax.swing.JPanel();
-        elevator1Floor1 = new javax.swing.JPanel();
-        elevator2Floor1 = new javax.swing.JPanel();
+        shaft1Panel = new javax.swing.JPanel();
+        shaft2Panel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -296,16 +116,6 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 formKeyReleased(evt);
             }
         });
-
-        elevator1Tracker.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        elevator1Tracker.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        elevator1Tracker.setText("#");
-        elevator1Tracker.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-        elevator2Tracker.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        elevator2Tracker.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        elevator2Tracker.setText("#");
-        elevator2Tracker.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         frameTitle.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         frameTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -320,35 +130,15 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
 
         floor1InstructionsUp.setText("Up: Z");
 
-        elevator1Floor3.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor3.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor3.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator1Floor3.setLayout(new java.awt.GridBagLayout());
+        shaft1Panel.setMaximumSize(new java.awt.Dimension(103, 239));
+        shaft1Panel.setMinimumSize(new java.awt.Dimension(103, 239));
+        shaft1Panel.setPreferredSize(new java.awt.Dimension(103, 239));
+        shaft1Panel.setLayout(new java.awt.GridBagLayout());
 
-        elevator2Floor3.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor3.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor3.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator2Floor3.setLayout(new java.awt.GridBagLayout());
-
-        elevator2Floor2.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor2.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor2.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator2Floor2.setLayout(new java.awt.GridBagLayout());
-
-        elevator1Floor2.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor2.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor2.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator1Floor2.setLayout(new java.awt.GridBagLayout());
-
-        elevator1Floor1.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor1.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator1Floor1.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator1Floor1.setLayout(new java.awt.GridBagLayout());
-
-        elevator2Floor1.setMaximumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor1.setMinimumSize(new java.awt.Dimension(91, 40));
-        elevator2Floor1.setPreferredSize(new java.awt.Dimension(91, 40));
-        elevator2Floor1.setLayout(new java.awt.GridBagLayout());
+        shaft2Panel.setMaximumSize(new java.awt.Dimension(103, 239));
+        shaft2Panel.setMinimumSize(new java.awt.Dimension(103, 239));
+        shaft2Panel.setPreferredSize(new java.awt.Dimension(103, 239));
+        shaft2Panel.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -357,78 +147,44 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(114, 114, 114)
-                        .addComponent(elevator1Tracker)
-                        .addGap(90, 90, 90)
-                        .addComponent(elevator2Tracker))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(floor3InstructionsDown)
-                        .addGap(18, 18, 18)
-                        .addComponent(elevator1Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(elevator2Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(floor2InstructionsUp)
-                            .addComponent(floor2InstructionsDown))
-                        .addGap(23, 23, 23)
-                        .addComponent(elevator1Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(elevator2Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(floor1InstructionsUp)
-                        .addGap(37, 37, 37)
-                        .addComponent(elevator1Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)
-                        .addComponent(elevator2Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(floor3InstructionsDown))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(floor2InstructionsUp)
+                                .addComponent(floor2InstructionsDown)
+                                .addComponent(floor1InstructionsUp)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(shaft1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(shaft2Panel, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {elevator1Floor1, elevator1Floor2, elevator1Floor3, elevator2Floor1, elevator2Floor2, elevator2Floor3});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(elevator1Tracker)
-                    .addComponent(elevator2Tracker))
                 .addGap(18, 18, 18)
+                .addComponent(frameTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(floor3InstructionsDown))
-                    .addComponent(elevator2Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(elevator1Floor3, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
+                        .addComponent(floor3InstructionsDown)
+                        .addGap(41, 41, 41)
                         .addComponent(floor2InstructionsUp)
                         .addGap(5, 5, 5)
-                        .addComponent(floor2InstructionsDown))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(elevator1Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(elevator2Floor2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
+                        .addComponent(floor2InstructionsDown)
+                        .addGap(35, 35, 35)
                         .addComponent(floor1InstructionsUp))
-                    .addComponent(elevator1Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(elevator2Floor1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(shaft2Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(shaft1Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
-
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {elevator1Floor1, elevator1Floor2, elevator1Floor3, elevator2Floor1, elevator2Floor2, elevator2Floor3});
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -477,18 +233,12 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel elevator1Floor1;
-    private javax.swing.JPanel elevator1Floor2;
-    private javax.swing.JPanel elevator1Floor3;
-    private javax.swing.JLabel elevator1Tracker;
-    private javax.swing.JPanel elevator2Floor1;
-    private javax.swing.JPanel elevator2Floor2;
-    private javax.swing.JPanel elevator2Floor3;
-    private javax.swing.JLabel elevator2Tracker;
     private javax.swing.JLabel floor1InstructionsUp;
     private javax.swing.JLabel floor2InstructionsDown;
     private javax.swing.JLabel floor2InstructionsUp;
     private javax.swing.JLabel floor3InstructionsDown;
     private javax.swing.JLabel frameTitle;
+    private javax.swing.JPanel shaft1Panel;
+    private javax.swing.JPanel shaft2Panel;
     // End of variables declaration//GEN-END:variables
 }

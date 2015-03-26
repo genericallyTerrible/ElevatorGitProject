@@ -21,10 +21,6 @@ public class DoorLabel extends JLabel {
     /**
      * Creates new form ElevatorLabel
      */
-    public DoorLabel() {
-        initComponents();
-    }
-    //Overloaded constructor
     public DoorLabel(String name) {
         initComponents();
         this.name = name;
@@ -35,7 +31,6 @@ public class DoorLabel extends JLabel {
     }
 
     public void openDoors() {
-        
         this.setText("]  [");
         this.setBackground(PRIMARY);
     }
@@ -47,10 +42,6 @@ public class DoorLabel extends JLabel {
     
     public void setEmpty() {
         this.setBackground(NONE);
-    }
-    
-    public void setFilledClosed() {
-        this.setBackground(SECONDARY);
     }
     
     /**
