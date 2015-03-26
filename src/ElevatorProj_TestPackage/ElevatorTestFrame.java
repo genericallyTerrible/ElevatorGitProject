@@ -13,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.Timer;
 
 /**
@@ -24,41 +25,42 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     /* Depricated
     ElevatorSystem elevatorSystem;
     */
-    private static final String MOVE_UP   = "up";
-    private static final String MOVE_DOWN = "down";
-    private static final String NO_MOVE   = "none";
+
     private static final int DOOR_TIME     = 2000;
     private static final int ELEVATOR_TIME = 6000;
     
     private ArrayList<DoorLabel> shaft0;
     private ArrayList<DoorLabel> shaft1;
     private ArrayList<DoorLabel> shaftInUse;
+    private ArrayList<JLabel> LabelTrackers;
+    private JLabel currentLabelTracker;
     private int currentShaft;
+    private int goalFloor;
     private DoorLabel doorInUse;
     private DoorLabel nextDoor;
-    private String moveDirection;
     private boolean[] doorIsOpen = {true, true};
     private int[] floorTracker = {0, 0};
     private static Timer OpenDoorsTimer;
     private static Timer CloseDoorsTimer;
     private static Timer MoveElevatorTimer;
     
-    private boolean canAcceptInput = true;
+    private boolean canAcceptInput     = true;
+    private boolean doorCloseThenMoves = false;
     
     /**
      * Creates new form ElevatorTestFrame
      */
     public ElevatorTestFrame() {
         
-        shaft0 = new ArrayList<>();
-        shaft1 = new ArrayList<>();
-        DoorLabel newDoor;
+        shaft0        = new ArrayList<>();
+        shaft1        = new ArrayList<>();
+        LabelTrackers = new ArrayList<>();
         
         OpenDoorsTimer    = new Timer(DOOR_TIME, openDoors);
         CloseDoorsTimer   = new Timer(DOOR_TIME, closeDoors);
         MoveElevatorTimer = new Timer(ELEVATOR_TIME, moveElevator);
-        OpenDoorsTimer.setRepeats(false);
-        CloseDoorsTimer.setRepeats(false);
+        OpenDoorsTimer   .setRepeats(false);
+        CloseDoorsTimer  .setRepeats(false);
         MoveElevatorTimer.setRepeats(false);
         
         initComponents();
@@ -68,6 +70,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         elevator2.closeDoor();
         elevatorSystem = new ElevatorSystem(elevator1, elevator2);
         */
+        DoorLabel newDoor;
         
         newDoor = new DoorLabel("E1F1");
         elevator1Floor1.add(newDoor);
@@ -93,12 +96,15 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         elevator2Floor3.add(newDoor);
         shaft1.add(newDoor);
         
-        shaft0.get(0).setBackground(DoorLabel.SECONDARY);
-        shaft0.get(0).setText("=][=");
+        LabelTrackers.add(elevator1Tracker);
+        LabelTrackers.add(elevator2Tracker);
+        
+        shaft0.get(0).setBackground(DoorLabel.PRIMARY);
+        shaft0.get(0).setText("]  [");
         shaft1.get(0).setBackground(DoorLabel.PRIMARY);
         shaft1.get(0).setText("]  [");
-        elevator1Tracker.setText("" + floorTracker[0]);
-        elevator2Tracker.setText("" + floorTracker[0]);
+        elevator1Tracker.setText("" + (floorTracker[0] + 1));
+        elevator2Tracker.setText("" + (floorTracker[0] + 1));
     }
     
     //Checks if the passed elevator 'shaft' is valid
@@ -109,8 +115,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         if      (elevatorShaft == 0) thisShaft = shaft0;
         else if (elevatorShaft == 1) thisShaft = shaft1;
         else {
-            System.err.println(elevatorShaft + " is not a valid elevator shaft");
-            System.out.print("Please refer to elevators by index value");
+            System.err.println(elevatorShaft + " is not a valid elevator shaft. ");
+            System.out.println("Please refer to elevators by index value");
             return null;
         }
         shaftInUse = thisShaft;
@@ -121,10 +127,11 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     
     //Opens the doors on the elevator in the desired 'shaft'
     private void openDoors(int elevatorShaft) {
-        if(checkShaft(elevatorShaft) != null) {
+        if(checkShaft(elevatorShaft) != null && !doorIsOpen[currentShaft]) {
             OpenDoorsTimer.start();            
         } else {
             System.err.println(elevatorShaft + " is not a valid Shaft");
+            canAcceptInput = true;
         }
     }
     
@@ -133,7 +140,6 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
             if(shaftInUse != null) {
                 doorInUse.openDoors();
                 doorIsOpen[currentShaft] = true;
-                System.out.println("Timer complete");
             } else {
                 System.err.println("Timer failed.");
             }
@@ -142,10 +148,11 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     
     //Closes the doors on the elevator in the desired 'shaft'
     private void closeDoors(int elevatorShaft) {
-        if(checkShaft(elevatorShaft) != null) {
+        if(checkShaft(elevatorShaft) != null && doorIsOpen[currentShaft]) {
             CloseDoorsTimer.start();            
         } else {
             System.err.println(elevatorShaft + " is not a valid Shaft");
+            canAcceptInput = true;
         }
     }
     
@@ -154,40 +161,52 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
             if(shaftInUse != null) {
                 doorInUse.closeDoors();
                 doorIsOpen[currentShaft] = false;
-                System.out.println("Timer complete");
             } else {
                 System.err.println("Timer failed.");
             }
-            canAcceptInput = true;
+            if(doorCloseThenMoves){
+                doorCloseThenMoves = false;
+                MoveElevatorTimer.start();
+            } else {
+                canAcceptInput = true;
+            }
         }};
+    
+    //Currently a work in progress
+    private void moveElevator_To_(int elevatorShaft, int destination) {
+        if(checkShaft(elevatorShaft) != null && (destination >= 0 && destination <= 2)) {
+            if      (destination > floorTracker[currentShaft]) nextDoor = shaftInUse.get(++floorTracker[currentShaft]);
+            else if (destination < floorTracker[currentShaft]) nextDoor = shaftInUse.get(--floorTracker[currentShaft]);
+            else { System.out.println("Elevator alread on that floor"); canAcceptInput = true; return; }
+            currentLabelTracker = LabelTrackers.get(currentShaft);
+            goalFloor = destination;
+            if(doorIsOpen[currentShaft]){
+                doorCloseThenMoves = true;
+                CloseDoorsTimer.start();
+            } else {
+                MoveElevatorTimer.start();
+            }
+        } else {
+            System.err.println("Failed to move elevator");
+            canAcceptInput = true;
+        }
+    }
     
     ActionListener moveElevator = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-            
-            
-            
+            currentLabelTracker.setText("" + (floorTracker[currentShaft] + 1));
+            doorInUse.setEmpty();
+            nextDoor.closeDoors();
+            if(floorTracker[currentShaft] == goalFloor){
+                doorInUse = nextDoor;
+                OpenDoorsTimer.start();
+            } else { 
+                moveElevator_To_(currentShaft, goalFloor);
+            }
         }};
     
-    //NON-FUNCTIONAL!!!!
-    //Currently a work in progress
-    private void moveElevatorUp(int elevatorShaft) {
-        ArrayList<DoorLabel> thisShaft = checkShaft(elevatorShaft);
-        if(thisShaft != null) {
-            if(floorTracker[elevatorShaft] == 2){
-                System.out.println("Elevator is already at top floor");
-            } else {
-                doorInUse = thisShaft.get(floorTracker[elevatorShaft]);
-                nextDoor = thisShaft.get(floorTracker[elevatorShaft] + 1);
-                closeDoors(elevatorShaft);
-                
-                
-                
-                doorInUse.setEmpty();
-                floorTracker[elevatorShaft]++;
-                nextDoor.setFilledClosed();
-                openDoors(elevatorShaft);
-            }
-        }
+    private void callNearestElevator(int floorOfCall) {
+        
     }
     
     //@Override
@@ -196,32 +215,28 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         if(canAcceptInput){
             canAcceptInput = false;
             switch(e.getKeyCode()) {
-                case KeyEvent.VK_1 :    //user released non-numpad '1' key
-                    openDoors(0);
+                case KeyEvent.VK_1 : //user released non-numpad '1' key
+                    moveElevator_To_(0, 0);
                     break;
 
-                case KeyEvent.VK_2 :    //user released non-numpad '2' key
-                    closeDoors(0);
+                case KeyEvent.VK_2 : //user released non-numpad '2' key
+                    moveElevator_To_(0, 1);
                     break;
 
-                case KeyEvent.VK_3 :    //user released non-numpad '3' key
-
-
+                case KeyEvent.VK_3 : //user released non-numpad '3' key
+                    moveElevator_To_(0, 2);
                     break;
 
-                case KeyEvent.VK_NUMPAD1 :  //user released numpad '1' key
-
-
+                case KeyEvent.VK_NUMPAD1 : //user released numpad '1' key
+                    moveElevator_To_(1, 0);
                     break;
 
-                case KeyEvent.VK_NUMPAD2 :  //user released numpad '2' key
-
-
+                case KeyEvent.VK_NUMPAD2 : //user released numpad '2' key
+                    moveElevator_To_(1, 1);
                     break;
 
-                case KeyEvent.VK_NUMPAD3 :  //user released numpad '3' key
-
-
+                case KeyEvent.VK_NUMPAD3 : //user released numpad '3' key
+                    moveElevator_To_(1, 2);
                     break;
 
                 case KeyEvent.VK_W : //user released keyboard 'w' key
