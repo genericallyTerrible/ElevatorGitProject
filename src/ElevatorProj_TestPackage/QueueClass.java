@@ -12,8 +12,8 @@ import java.util.Queue;
 
 /**
  *
- * @author John
- * @param <T>
+ * @authors Andrew Krause, Mitchell Babej, and John Merkel
+ * @param <T> The type of ArrayList the queue will be;
  */
 public class QueueClass<T> implements Queue{
     
@@ -21,19 +21,20 @@ public class QueueClass<T> implements Queue{
     
     @Override
     public boolean add(Object e) {
-        return list.add((T)e);
+        if(list.add((T)e)) {
+            return true;
+        }
+        throw new IllegalStateException("Failled to add object to the queue");
     }
 
     @Override
     public boolean offer(Object e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return list.add((T)e);
     }
 
     @Override
     public T remove() {
-        if(list.size() > 0)
-            return list.remove(0);
-        return null;
+        return list.remove(0);
     }
     
     public T remove(int index){
@@ -44,12 +45,14 @@ public class QueueClass<T> implements Queue{
 
     @Override
     public T poll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if(list.size() > 0)
+            return list.remove(0);
+        return null;
     }
 
     @Override
     public Object element() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return list.get(0);
     }
 
     @Override

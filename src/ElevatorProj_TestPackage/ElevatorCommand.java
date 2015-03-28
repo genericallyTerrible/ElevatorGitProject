@@ -7,7 +7,7 @@ package ElevatorProj_TestPackage;
 
 /**
  *
- * @author John
+ * @authors Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class ElevatorCommand {
     

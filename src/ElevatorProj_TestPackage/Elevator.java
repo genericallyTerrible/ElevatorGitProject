@@ -8,7 +8,7 @@ package ElevatorProj_TestPackage;
 
 /**
  *
- * @author a-krause
+ * @authors Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class Elevator {
     private boolean doorOpen;

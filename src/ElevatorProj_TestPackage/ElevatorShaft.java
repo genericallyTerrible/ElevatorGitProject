@@ -13,7 +13,7 @@ import javax.swing.Timer;
 
 /**
  *
- * @author John
+ * @authors Andrew Krause, Mitchell Babej, and John Merkels
  */
 public class ElevatorShaft extends JPanel {
     

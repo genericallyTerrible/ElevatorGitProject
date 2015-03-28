@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 
 /**
  *
- * @author John
+ * @authors Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class DoorLabel extends JLabel {
     String name = "";
