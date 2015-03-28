@@ -14,39 +14,32 @@ public class Elevator {
     private boolean doorOpen;
     private int floor;
     
-    Elevator(int currentFloor)
-    {
+    Elevator(int currentFloor) {
         floor = currentFloor;
         doorOpen = true;
     }
     
-    public int getFloor()
-    {
+    public int getFloor() {
         return floor;
     }
     
-    public boolean isDoorOpen()
-    {
+    public boolean isDoorOpen() {
         return doorOpen;
     }
     
-    public void openDoor()
-    {
+    public void openDoor() {
         doorOpen = true;
     }
     
-    public void closeDoor()
-    {
+    public void closeDoor() {
         doorOpen = false;
     }
     
-    public void goUp()
-    {
+    public void goUp() {
         floor++;
     }
     
-    public void goDown()
-    {
+    public void goDown() {
         if(!(floor < 1))
             floor--;
     }

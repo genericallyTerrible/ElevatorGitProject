@@ -17,20 +17,27 @@ import javax.swing.Timer;
  */
 public class ElevatorShaft extends JPanel {
     
-    private static final int DOOR_TIME     = 2000;
-    private static final int ELEVATOR_TIME = 6000;
+    
+    private static final String MOVE_UP    = ElevatorTestFrame.MOVE_UP;
+    private static final String MOVE_DOWN  = ElevatorTestFrame.MOVE_DOWN;
+    private static final String NO_MOVE    = ElevatorTestFrame.NO_MOVE;
+    private static final int DOOR_TIME     = ElevatorTestFrame.DOOR_TIME;
+    private static final int ELEVATOR_TIME = ElevatorTestFrame.ELEVATOR_TIME;
+    private static final int TOP_FLOOR    = 2;
+    private static final int BOTTOM_FLOOR = 0;
     
     private String name = "";
     
     private ArrayList<DoorLabel> shaft;
     private int currentFloor = 0;
     private int goalFloor;
-    private boolean doorIsOpen         = false;
-    private boolean isAnimated         = false;
-    private boolean doorCloseThenMoves = false;
+    private boolean isAnimated     = false;
+    private boolean moveAfterClose = false;
+    private String   moveAfterDone = NO_MOVE;
     private Timer openDoorsTimer;
     private Timer closeDoorsTimer;
     private Timer moveElevatorTimer;
+    private String moveDirection;
     
     /**
      * Creates new form ElevatorShaft
@@ -74,68 +81,97 @@ public class ElevatorShaft extends JPanel {
         return name;
     }
     
+    public boolean isAnimated() {
+        return isAnimated;
+    }
+    
+    public int getCurrentFloor() {
+        return currentFloor;
+    }
+    
     //Opens the doors on the elevator in the desired 'shaft'
     public void openDoors() {
-        if(!isAnimated){
+        if(!isAnimated)
             isAnimated = true;
-            openDoorsTimer.start();
-        }
+        openDoorsTimer.start();
     }
     
     ActionListener openDoors = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             shaft.get(currentFloor).openDoors();
-            doorIsOpen = true;
             closeDoorsTimer.start();
         }};
     
     //Closes the doors on the elevator in the desired 'shaft'
     public void closeDoors() {
-        if(!isAnimated){
+        if(!isAnimated)
            isAnimated = true;
-           closeDoorsTimer.start(); 
-        }
+        closeDoorsTimer.start();
     }
     
     ActionListener closeDoors = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             shaft.get(currentFloor).closeDoors();
-            doorIsOpen = false;
-            if(doorCloseThenMoves){
+            if(moveAfterClose){
                 moveElevatorTimer.start();
-            } else { 
+            } else if(moveAfterDone.equals(MOVE_UP)) {
+                moveElevatorTo(++goalFloor);
+                moveAfterDone = NO_MOVE;
+            } else if(moveAfterDone.equals(MOVE_DOWN)) {
+                moveElevatorTo(--goalFloor);
+                moveAfterDone = NO_MOVE;
+            } else
                 isAnimated = false;
-            }
         }};
     
     //Currently a work in progress
-    public void moveElevatorTo(int destination) {
-        if(currentFloor == destination) {
-            System.out.println("Already at desired floor");
-            return;
-        } else if (destination > 2 || destination < 0) {
+    public void moveElevatorTo(int destination) { 
+        //Check if destination is a valid floor
+        if (destination > TOP_FLOOR || destination < BOTTOM_FLOOR) {
             System.err.println("Invalid floor number");
             System.out.println("Please refer to floors by index value");
             return;
         }
-        isAnimated = true;
-        goalFloor = destination;
-        if(doorIsOpen){
-            doorCloseThenMoves = true;
-            closeDoorsTimer.start();
-        } else {
-            moveElevatorTimer.start();
+
+        //Check if already on desired floor
+        else if(currentFloor == destination) {
+            openDoors();
+            return;
         }
+        isAnimated = true;
+        //Determine to move up or down
+        if(destination > currentFloor) moveDirection = MOVE_UP;
+        else moveDirection = MOVE_DOWN;
+        //Begin movement
+        goalFloor = destination;
+        moveElevatorTimer.start();    
+    }
+    
+    public void moveElevatorTo(int destination, String moveAfterDone) {
+        moveElevatorTo(destination);
+        this.moveAfterDone = moveAfterDone;
     }
     
     ActionListener moveElevator = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
-            shaft.get(currentFloor++).setEmpty();
+            //Determine if move up or move down
+            if(moveDirection.equals(MOVE_UP))
+                shaft.get(currentFloor++).setEmpty();
+            else if(moveDirection.equals(MOVE_DOWN))
+                shaft.get(currentFloor--).setEmpty();
+            else return;
+            //Begin move
+            moveDirection = NO_MOVE;
+            //Set tracking label
             floorTracker.setText("" + (currentFloor + 1));
+            //Set the proper floor label to have an elevator with closed doors
             shaft.get(currentFloor).closeDoors();
+            //If on the goal floor, stop
             if(currentFloor == goalFloor){
-                openDoorsTimer.start();
-            } else { 
+                openDoors();
+            }
+            //Otherwise keep going
+            else { 
                 moveElevatorTo(goalFloor);
             }
         }};
