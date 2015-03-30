@@ -33,13 +33,12 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     public static final String PrefersOne   = "elvator 1";
     public static final String PrefersTwo   = "elevator 2";
     
-    public static final int DOOR_TIME     = 1000;
-    public static final int ELEVATOR_TIME = 2000;    
-    private ElevatorShaft  shaft1;
-    private ElevatorShaft  shaft2;
-    private Timer      checkQueue;
+    public static final int DOOR_TIME     = 2000;
+    public static final int ELEVATOR_TIME = 6000;    
+    private ElevatorShaft     shaft1;
+    private ElevatorShaft     shaft2;
+    private Timer         checkQueue;
     private QueueClass<ElevatorCommand> commandQueue;
-    private boolean executionRunning = false;
     
     /**
      * Creates new form ElevatorTestFrame
@@ -48,7 +47,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         
         commandQueue = new QueueClass<>();
         
-        checkQueue = new Timer(25, checkAction);
+        checkQueue = new Timer(100, checkAction);
         checkQueue.setRepeats(false);
         
         initComponents();
@@ -61,7 +60,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     
     private void addToQueue(String elevatorPreference, int floorOfCall){
         ElevatorCommand newCommand = new ElevatorCommand(floorOfCall, NO_MOVE, elevatorPreference);
-        if(!commandQueue.contains(newCommand)) {
+        if(!checkForDoubles(newCommand)) {
             commandQueue.add(newCommand);
             System.out.println("Added call for " + elevatorPreference + " to floor: " + floorOfCall);
             executeCommand();
@@ -70,7 +69,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     
     private void addToQueue(int floorOfCall, String moveDirection) {
         ElevatorCommand newCommand = new ElevatorCommand(floorOfCall, moveDirection);
-        if(!commandQueue.contains(newCommand)) {
+        if(!checkForDoubles(newCommand)) {
             commandQueue.add(newCommand);
             System.out.println("Added call for nearest elvator to floor: " + floorOfCall + ", moving " + moveDirection + " after call is complete");
             executeCommand();
@@ -82,10 +81,21 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
         executeCommand();
     }
     
+    private boolean checkForDoubles(ElevatorCommand newCommand) {
+        for(int x = 0; x < commandQueue.size(); x++){
+            ElevatorCommand oldCommand = commandQueue.peekAhead(x);
+            if(oldCommand.getFloor() == newCommand.getFloor() && oldCommand.getMove().equals(newCommand.getMove()) && oldCommand.getPreference().equals(newCommand.getPreference())) {
+                System.out.println("Identicle command");
+                return true;
+            }  
+        }
+        return false;
+    }
+    
     private void executeCommand() {
-        if(commandQueue.size() > 0 && !executionRunning) {
+        if(commandQueue.size() > 0) {
             ElevatorCommand newCommand = commandQueue.peek();
-            if(newCommand != null) {
+            if(newCommand != null && newCommand.isActive()) {
                 boolean commandPassed = false;
                 int goalFloor = newCommand.getFloor();
                 String moveDirection = newCommand.getMove();
@@ -95,8 +105,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                     //If not animated, do the thing
                     if(!shaft1.isAnimated()) {
                         shaft1.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove();
-                        executionRunning = false;
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     } else {
                         //if animated, see if the other shaft can do the next action, etc.
                         executeNextCommand(1, 1);
@@ -105,8 +115,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                     //If not animated, do the thing
                     if(!shaft2.isAnimated()) {
                         shaft2.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove();
-                        executionRunning = false;
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     } else {
                         //if animated, see if the other shaft can do the next action, etc.
                         executeNextCommand(1, 2);
@@ -125,16 +135,17 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
 
                     if(!closestShaft.isAnimated()) {
                         closestShaft.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove();
-                        executionRunning = false;
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     }
                     else if (!otherShaft.isAnimated()) {
                         otherShaft.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove();
-                        executionRunning = false;
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     }
                 } 
             }
+            executeNextCommand(1, 0);
             checkQueue.start();
         }
     }
@@ -142,7 +153,7 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
     private void executeNextCommand(int nextCommand, int previousShaft){
         if(commandQueue.size() >= nextCommand) {
             ElevatorCommand newCommand = commandQueue.peekAhead(nextCommand);
-            if(newCommand != null) {
+            if(newCommand != null && newCommand.isActive()) {
                 int goalFloor = newCommand.getFloor();
                 String moveDirection = newCommand.getMove();
                 String elevatorPreference = newCommand.getPreference();
@@ -150,7 +161,8 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 if (elevatorPreference.equals(PrefersOne)) {
                     if(!shaft1.isAnimated() && previousShaft != 1) {
                         shaft1.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove(nextCommand);
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     } else {
                         executeNextCommand(nextCommand + 1, 1);
                         return;
@@ -158,86 +170,51 @@ public class ElevatorTestFrame extends javax.swing.JFrame{
                 } else if(elevatorPreference.equals(PrefersTwo)) {
                     if(!shaft2.isAnimated() && previousShaft != 2) {
                         shaft2.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove(nextCommand);
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     } else {
                         executeNextCommand(nextCommand + 1, 2);
                         return;
                     }
                 } else {
                     //Call other elevator
-                    if(previousShaft == 1 && !shaft2.isAnimated()){
+                    if(!shaft1.isAnimated()){
                         shaft2.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove(nextCommand);
-                    } else if(previousShaft == 2 && !shaft1.isAnimated()){
+                        newCommand.setActive(false);
+                        newRemovalDelay();
+                    } else if(!shaft1.isAnimated()){
                         shaft1.moveElevatorTo(goalFloor, moveDirection);
-                        commandQueue.remove(nextCommand);
+                        newCommand.setActive(false);
+                        newRemovalDelay();
                     }
-                    executeNextCommand(nextCommand + 1, 2);
+                    executeNextCommand(nextCommand + 1, 0);
                     return;
                 } 
             }
         }
-        executionRunning = false;
         checkQueue.start();
     }
-    
-    
-    /*
-    * * * DEPRICATED * * *
-    private void callNearestElevator(int floorOfCall, String moveDirection) {
-        //Local variables
-        ElevatorShaft closestShaft;
-        ElevatorShaft   otherShaft;
-        boolean wasQueued = false;
-        boolean commandPassed = false;
-
-        ElevatorCommand firstCommand = commandQueue.peek();
-        if (firstCommand != null && firstCommand.getFloor() == floorOfCall && (firstCommand.getMove() == null ? moveDirection == null : firstCommand.getMove().equals(moveDirection))){
-            wasQueued = true;
-        }
-
-        //Determine if any elevators already on this floor
-        if(shaft1.getCurrentFloor() == floorOfCall && !shaft1.isAnimated()) {
-            shaft1.moveElevatorTo(floorOfCall, moveDirection);
-        } else if(shaft2.getCurrentFloor() == floorOfCall && !shaft2.isAnimated()) {
-            shaft2.moveElevatorTo(floorOfCall, moveDirection);
-        } else {
-            if((Math.abs(shaft1.getCurrentFloor() - floorOfCall)) <= (Math.abs(shaft2.getCurrentFloor() - floorOfCall))) {
-                closestShaft = shaft1;
-                otherShaft   = shaft2;
-            } else {
-                closestShaft = shaft2;
-                otherShaft   = shaft1;
-        }
-
-        if(!closestShaft.isAnimated()) {
-            closestShaft.moveElevatorTo(floorOfCall, moveDirection);
-            commandPassed = true;
-        } else if(!otherShaft.isAnimated()) {
-            otherShaft.moveElevatorTo(floorOfCall, moveDirection);
-            commandPassed = true;
-        } else {
-            if(!wasQueued) {
-                ElevatorCommand newCommand = new ElevatorCommand(floorOfCall, moveDirection);
-                commandQueue.add(newCommand);
-                System.out.println("Added call to floor: " + floorOfCall + ", with a final move of: " + moveDirection);
-            }
-            checkQueue.start();
-            return;
-            }
-        }
-        if (wasQueued && commandPassed) {
-            System.out.println("Removed " + commandQueue.remove().toString());
-            System.out.println("Commands left to exicute: " + commandQueue.size());
-        }
-        if(commandQueue.size() > 0)
-        checkQueue.start();
-    }
-    */
     
     ActionListener checkAction = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
             executeCommand();
+        }};
+    
+    private void newRemovalDelay() {
+        Timer delayBeforeRemoval = new Timer(DOOR_TIME, removeAfterDelay);
+              delayBeforeRemoval.setRepeats(false);
+              delayBeforeRemoval.start();
+    }
+    
+    ActionListener removeAfterDelay = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            for(int x = 0; x < commandQueue.size(); x++) {
+                ElevatorCommand y = commandQueue.peekAhead(x);
+                if(!y.isActive()) {
+                    commandQueue.remove(x);
+                    System.out.println("Removed floorCall:" + y.getFloor() + ", moveDirection: " + y.getMove() + " , and preference: " + y.getPreference());
+                }
+            }
         }};
     
     //@Override

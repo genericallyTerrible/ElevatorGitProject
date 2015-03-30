@@ -33,10 +33,13 @@ public class ElevatorShaft extends JPanel {
     private int goalFloor;
     private boolean isAnimated     = false;
     private boolean moveAfterClose = false;
+    private boolean doorsBuffered  = false;
     private String   moveAfterDone = NO_MOVE;
     private Timer openDoorsTimer;
     private Timer closeDoorsTimer;
+    private Timer callCloseInstantly;
     private Timer moveElevatorTimer;
+    private Timer doorBuffer;
     private String moveDirection;
     
     /**
@@ -48,13 +51,16 @@ public class ElevatorShaft extends JPanel {
         
         shaft = new ArrayList<>();
         
-        openDoorsTimer    = new Timer(DOOR_TIME, openDoors);
-        closeDoorsTimer   = new Timer(DOOR_TIME, closeDoors);
-        moveElevatorTimer = new Timer(ELEVATOR_TIME, moveElevator);
-        openDoorsTimer   .setRepeats(false);
-        closeDoorsTimer  .setRepeats(false);
-        moveElevatorTimer.setRepeats(false);
-        
+        openDoorsTimer     = new Timer(    DOOR_TIME, openDoors);
+        closeDoorsTimer    = new Timer(    DOOR_TIME, closeDoors);
+        callCloseInstantly = new Timer(            0, closeDoors);
+        moveElevatorTimer  = new Timer(ELEVATOR_TIME, moveElevator);
+        doorBuffer         = new Timer(         3000, doorBuffered);
+        openDoorsTimer    .setRepeats(false);
+        closeDoorsTimer   .setRepeats(false);
+        callCloseInstantly.setRepeats(false);
+        moveElevatorTimer .setRepeats(false);
+        doorBuffer        .setRepeats(false);
         initComponents();
         
         DoorLabel newDoor;
@@ -85,6 +91,10 @@ public class ElevatorShaft extends JPanel {
         return isAnimated;
     }
     
+    public boolean doorsBuffered() {
+        return doorsBuffered;
+    }
+    
     public int getCurrentFloor() {
         return currentFloor;
     }
@@ -93,11 +103,14 @@ public class ElevatorShaft extends JPanel {
     public void openDoors() {
         if(!isAnimated)
             isAnimated = true;
+        doorsBuffered = true;
         openDoorsTimer.start();
     }
     
     ActionListener openDoors = new ActionListener() {
         public void actionPerformed(ActionEvent evt) {
+            doorBuffer.start();
+            
             shaft.get(currentFloor).openDoors();
             closeDoorsTimer.start();
         }};
@@ -134,8 +147,11 @@ public class ElevatorShaft extends JPanel {
         }
 
         //Check if already on desired floor
-        else if(currentFloor == destination) {
+        else if(currentFloor == destination && !doorsBuffered) {
             openDoors();
+            return;
+        } else if(currentFloor == destination) {
+            callCloseInstantly.start();
             return;
         }
         isAnimated = true;
@@ -174,6 +190,11 @@ public class ElevatorShaft extends JPanel {
             else { 
                 moveElevatorTo(goalFloor);
             }
+        }};
+    
+    ActionListener doorBuffered = new ActionListener() {
+        public void actionPerformed(ActionEvent evt) {
+            doorsBuffered = false;
         }};
     
     /**
