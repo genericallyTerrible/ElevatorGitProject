@@ -11,13 +11,20 @@ import java.util.Iterator;
 import java.util.Queue;
 
 /**
- *
- * @authors Andrew Krause, Mitchell Babej, and John Merkel
+ * A collection designed for holding elements prior to processing.
+ * Besides basic Collection operations, queues provide additional insertion,
+ * extraction, and inspection operations. Each of these methods exists
+ * in two forms: one throws an exception if the operation fails, the other
+ * returns a special value (either null or false, depending on the operation).
+ * The latter form of the insert operation is designed specifically for use
+ * with capacity-restricted Queue implementations; in most implementations,
+ * insert operations cannot fail.
+ * @author Andrew Krause, Mitchell Babej, and John Merkel
  * @param <T> The type of ArrayList the queue will be;
  */
 public class QueueClass<T> implements Queue{
     
-    private ArrayList<T> list = new ArrayList<T>();
+    private ArrayList<T> list = new ArrayList<>();
     
     @Override
     public boolean add(Object e) {
@@ -37,12 +44,6 @@ public class QueueClass<T> implements Queue{
         return list.remove(0);
     }
     
-    public T remove(int index){
-        if(list.size() > index)
-            return list.remove(index);
-        return null;
-    }
-
     @Override
     public T poll() {
         if(list.size() > 0)
@@ -50,6 +51,18 @@ public class QueueClass<T> implements Queue{
         return null;
     }
 
+     /**
+     * Retrieves and removes the object at the specified index
+     * of this queue, or returns null if the request is null / out of bounds.
+     * @param index Index location of the desired removal.
+     * @return Object at location index, or null if out of bounds.
+     */
+    public T pollAhead(int index){
+        if(list.size() > index)
+            return list.remove(index);
+        return null;
+    }
+    
     @Override
     public Object element() {
         return list.get(0);
@@ -62,6 +75,12 @@ public class QueueClass<T> implements Queue{
         return null;
     }
     
+    /**
+     * Retrieves, but does not remove, the object at the specified index
+     * of this queue, or returns null if the request is null / out of bounds.
+     * @param index Index location of the desired peek.
+     * @return Object at location index, or null if out of bounds.
+     */
     public T peekAhead(int index) {
         if(list.size() > index)
             return list.get(index);

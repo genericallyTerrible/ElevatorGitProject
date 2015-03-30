@@ -10,36 +10,63 @@ import javax.swing.JLabel;
 
 /**
  *
- * @authors Andrew Krause, Mitchell Babej, and John Merkel
+ * @author Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class DoorLabel extends JLabel {
+    
     String name = "";
+    
+    /**
+     *
+     */
     public static final Color PRIMARY   = new Color( 84, 238,  73);
+
+    /**
+     *
+     */
     public static final Color SECONDARY = new Color(255, 255,   0);
+
+    /**
+     *
+     */
     public static final Color NONE      = new Color(214, 217, 223);
     
     /**
      * Creates new form ElevatorLabel
+     * @param name
      */
     public DoorLabel(String name) {
         initComponents();
         this.name = name;
     }
     
+    /**
+     *
+     * @return
+     */
     public String getLabelName() {
         return name;
     }
 
+    /**
+     *
+     */
     public void openDoors() {
         this.setText("]  [");
         this.setBackground(PRIMARY);
     }
     
+    /**
+     *
+     */
     public void closeDoors() {
         this.setText("=][=");
         this.setBackground(SECONDARY);
     }
     
+    /**
+     *
+     */
     public void setEmpty() {
         this.setBackground(NONE);
     }

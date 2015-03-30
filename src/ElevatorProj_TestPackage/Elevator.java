@@ -8,7 +8,7 @@ package ElevatorProj_TestPackage;
 
 /**
  *
- * @authors Andrew Krause, Mitchell Babej, and John Merkel
+ * @author Andrew Krause, Mitchell Babej, and John Merkel
  */
 public class Elevator {
     private boolean doorOpen;
@@ -19,26 +19,46 @@ public class Elevator {
         doorOpen = true;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getFloor() {
         return floor;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean isDoorOpen() {
         return doorOpen;
     }
     
+    /**
+     *
+     */
     public void openDoor() {
         doorOpen = true;
     }
     
+    /**
+     *
+     */
     public void closeDoor() {
         doorOpen = false;
     }
     
+    /**
+     *
+     */
     public void goUp() {
         floor++;
     }
     
+    /**
+     *
+     */
     public void goDown() {
         if(!(floor < 1))
             floor--;

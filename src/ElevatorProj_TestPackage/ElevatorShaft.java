@@ -13,16 +13,18 @@ import javax.swing.Timer;
 
 /**
  *
- * @authors Andrew Krause, Mitchell Babej, and John Merkels
+ * @author Andrew Krause, Mitchell Babej, and John Merkels
  */
 public class ElevatorShaft extends JPanel {
     
-    
+    //String constants for know an elevator's action after reaching it's desired floor
     private static final String MOVE_UP    = ElevatorTestFrame.MOVE_UP;
     private static final String MOVE_DOWN  = ElevatorTestFrame.MOVE_DOWN;
     private static final String NO_MOVE    = ElevatorTestFrame.NO_MOVE;
+    
     private static final int DOOR_TIME     = ElevatorTestFrame.DOOR_TIME;
     private static final int ELEVATOR_TIME = ElevatorTestFrame.ELEVATOR_TIME;
+    
     private static final int TOP_FLOOR    = 2;
     private static final int BOTTOM_FLOOR = 0;
     
@@ -83,24 +85,44 @@ public class ElevatorShaft extends JPanel {
         floorTracker.setText("" + (currentFloor + 1));
     }
     
+    /**
+     *
+     * @return
+     */
     public String getShaftName() {
         return name;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean isAnimated() {
         return isAnimated;
     }
     
+    /**
+     *
+     * @return
+     */
     public boolean doorsBuffered() {
         return doorsBuffered;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getCurrentFloor() {
         return currentFloor;
     }
     
     //Opens the doors on the elevator in the desired 'shaft'
-    public void openDoors() {
+
+    /**
+     *
+     */
+        public void openDoors() {
         if(!isAnimated)
             isAnimated = true;
         doorsBuffered = true;
@@ -108,6 +130,7 @@ public class ElevatorShaft extends JPanel {
     }
     
     ActionListener openDoors = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
             doorBuffer.start();
             
@@ -116,13 +139,18 @@ public class ElevatorShaft extends JPanel {
         }};
     
     //Closes the doors on the elevator in the desired 'shaft'
-    public void closeDoors() {
+
+    /**
+     *
+     */
+        public void closeDoors() {
         if(!isAnimated)
            isAnimated = true;
         closeDoorsTimer.start();
     }
     
     ActionListener closeDoors = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
             shaft.get(currentFloor).closeDoors();
             if(moveAfterClose){
@@ -138,7 +166,12 @@ public class ElevatorShaft extends JPanel {
         }};
     
     //Currently a work in progress
-    public void moveElevatorTo(int destination) { 
+ 
+    /**
+     *
+     * @param destination
+     */
+        public void moveElevatorTo(int destination) { 
         //Check if destination is a valid floor
         if (destination > TOP_FLOOR || destination < BOTTOM_FLOOR) {
             System.err.println("Invalid floor number");
@@ -163,19 +196,31 @@ public class ElevatorShaft extends JPanel {
         moveElevatorTimer.start();    
     }
     
+    /**
+     *
+     * @param destination
+     * @param moveAfterDone
+     */
     public void moveElevatorTo(int destination, String moveAfterDone) {
         moveElevatorTo(destination);
         this.moveAfterDone = moveAfterDone;
     }
     
     ActionListener moveElevator = new ActionListener() {
+        @Override
         public void actionPerformed(ActionEvent evt) {
             //Determine if move up or move down
-            if(moveDirection.equals(MOVE_UP))
-                shaft.get(currentFloor++).setEmpty();
-            else if(moveDirection.equals(MOVE_DOWN))
-                shaft.get(currentFloor--).setEmpty();
-            else return;
+            switch(moveDirection) {
+                case MOVE_UP:
+                    shaft.get(currentFloor++).setEmpty();
+                    break;
+                case MOVE_DOWN:
+                    shaft.get(currentFloor--).setEmpty();
+                    break;
+                default:
+                    return;
+            }
+            
             //Begin move
             moveDirection = NO_MOVE;
             //Set tracking label
